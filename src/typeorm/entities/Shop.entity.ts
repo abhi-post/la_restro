@@ -1,12 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'user_shops'})
+@Entity({ name: 'enterprise_details'})
 export class Shop{
     @PrimaryGeneratedColumn({ type: 'bigint'})
     id: number;
-
-    @Column()
-    shop_name: string;
 
     @Column({ nullable:true })
     title_name: string;

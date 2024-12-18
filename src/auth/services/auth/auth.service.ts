@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
-import { LoginDto } from 'src/auth/dtos/Login.dto';
-import { UsersService } from 'src/users/services/users/users.service';
+import { LoginDto } from '../../dtos/Login.dto';
+import { UsersService } from '../../../users/services/users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -10,8 +10,8 @@ export class AuthService {
         private readonly userService: UsersService,
         private jwtService: JwtService
     ){}
-    async validateUser(username: string, password: string){
-        const existingUser = await this.userService.findOne(username);
+    async validateUser(mobile_no: number, password: string){
+        const existingUser = await this.userService.findOne(mobile_no);
         if (existingUser && (await compare(password, existingUser.password))) {
             const { password, ...rest } = existingUser;
             const jwtToken = this.jwtService.sign(rest);

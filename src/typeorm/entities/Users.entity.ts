@@ -6,8 +6,11 @@ export class User {
     @PrimaryGeneratedColumn({ type: 'bigint'})
     id: number;
 
-    @Column({ unique:true })
-    username: string;
+    @Column()
+    enterprise_name: string;
+
+    @Column({ type: 'bigint', unique: true })
+    mobile_no: number;
 
     @Column()
     password: string;

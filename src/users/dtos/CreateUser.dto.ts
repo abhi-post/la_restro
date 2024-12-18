@@ -1,12 +1,16 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateUserDto{
 
-    @IsString()
-    @IsNotEmpty()
-    username: string;
+    @IsNumber()
+    @IsNotEmpty({ message: "mobile number is required"})
+    mobile_no: number;
 
     @IsString()
-    @IsNotEmpty()
+    @IsNotEmpty({ message: "enterprise_name is required"})
+    enterprise_name: string;
+
+    @IsString()
+    @IsNotEmpty({ message: "password is required"})
     password: string;
 }

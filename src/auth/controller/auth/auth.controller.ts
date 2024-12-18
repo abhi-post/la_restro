@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { LoginDto } from 'src/auth/dtos/Login.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
-import { AuthService } from 'src/auth/services/auth/auth.service';
+import { LoginDto } from '../../dtos/Login.dto';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { LocalAuthGuard } from '../../guards/local-auth.guard';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -12,10 +12,10 @@ export class AuthController {
     @Post('login')
     @UseGuards(LocalAuthGuard)
     login(@Body() loginDto: LoginDto){
-        return this.authService.validateUser(loginDto.username, loginDto.password);
+        return this.authService.validateUser(loginDto.mobile_no, loginDto.password);
     }
 
-    @Get('/profile')
+    @Get('profile')
     @UseGuards(JwtAuthGuard)
     getProfile(){
         return "Testing";

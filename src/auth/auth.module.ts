@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './controller/auth/auth.controller';
 import { AuthService } from './services/auth/auth.service';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JWT_SECRET } from 'src/config/constants';
+import { JWT_SECRET } from '../config/constants';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';

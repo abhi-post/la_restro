@@ -3,7 +3,7 @@ import { identity } from 'rxjs';
 import { CreateShopDto } from '../../dtos/CreateShop.dto';
 import { CreateUserDto } from '../../dtos/CreateUser.dto';
 import { UpdateUserDto } from '../../dtos/UpdateUser.dto';
-import { UsersService } from 'src/users/services/users/users.service';
+import { UsersService } from '../../services/users/users.service';
 
 @Controller('users')
 export class UsersController {

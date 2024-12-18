@@ -21,12 +21,12 @@ import databaseConfig from './config/database.config';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig],
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`, // .env.development
+      envFilePath: `.env`, // .env.development
     }),
     UsersModule,
     AuthModule,
-    MenuModule
-  ],
+    MenuModule 
+  ],  
   controllers: [AppController],
   providers: [AppService],
 })

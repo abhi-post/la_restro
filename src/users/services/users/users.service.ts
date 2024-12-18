@@ -1,12 +1,12 @@
 import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateShopParams, CreateUserParams, UpdateUserParams } from 'src/utils/types';
+import { CreateShopParams, CreateUserParams, UpdateUserParams } from '../../../utils/types';
 import { EntityManager, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as QrCode from 'qrcode';
 import * as sharp from 'sharp';
-import { User } from 'src/typeorm/entities/Users.entity';
-import { Shop } from 'src/typeorm/entities/Shop.entity';
+import { User } from '../../../typeorm/entities/Users.entity';
+import { Shop } from '../../../typeorm/entities/Shop.entity';
 import { join } from 'path'
 
 @Injectable()
@@ -33,7 +33,7 @@ export class UsersService {
     async createUser(userDetails: CreateUserParams){
         try{
             const existingUser = await this.userRepository.findOne({
-                where:{username: userDetails.username}
+                where:{mobile_no: userDetails.mobile_no}
             });
             
             if(existingUser){
@@ -94,14 +94,6 @@ export class UsersService {
                 throw new NotFoundException();
             }
 
-            const existingMobile = await this.shopRepository.findOne({
-                where:{mobile_no: shopDetails.mobile_no}
-            });
-            
-            if(existingMobile){
-                throw new ConflictException();
-            }
-
             const newShop =  this.shopRepository.create({...shopDetails, shop_qr_code: base64String, created_date: new Date(), created_time: new Date()});
             const savedShop = await this.shopRepository.save(newShop);
             user.shop = savedShop;
@@ -123,10 +115,10 @@ export class UsersService {
         }
     }
 
-    async findOne(username: string){
+    async findOne(mobile_no: number){
         try{
             const existingUser = await this.userRepository.findOne({
-                where:{username: username}
+                where:{mobile_no: mobile_no}
             });
             return existingUser;
         }catch(error){
