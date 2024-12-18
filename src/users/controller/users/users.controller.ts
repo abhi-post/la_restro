@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { identity } from 'rxjs';
-import { CreateShopDto } from 'src/users/dtos/CreateShop.dto';
-import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
-import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
+import { CreateShopDto } from '../../dtos/CreateShop.dto';
+import { CreateUserDto } from '../../dtos/CreateUser.dto';
+import { UpdateUserDto } from '../../dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 
 @Controller('users')
