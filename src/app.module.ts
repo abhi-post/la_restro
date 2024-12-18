@@ -7,8 +7,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TYPEORM_CONFIG } from './config/constants';
 import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
-import { PhotosModule } from './photos/photos.module';
-import { PhotosModule } from './photos/photos.module';
 import databaseConfig from './config/database.config';
 
 @Module({
@@ -27,8 +25,7 @@ import databaseConfig from './config/database.config';
     }),
     UsersModule,
     AuthModule,
-    MenuModule,
-    PhotosModule
+    MenuModule
   ],
   controllers: [AppController],
   providers: [AppService],
