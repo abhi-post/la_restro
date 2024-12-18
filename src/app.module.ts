@@ -21,7 +21,7 @@ import databaseConfig from './config/database.config';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig],
-      envFilePath: `.env`, // .env.development
+      envFilePath: `.env.${process.env.NODE_ENV || 'production'}`,
     }),
     UsersModule,
     AuthModule,
