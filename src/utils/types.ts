@@ -10,8 +10,6 @@ export type UpdateUserParams = {
 }
 
 export type CreateShopParams = {
-    shop_name: string;
-    mobile_no: number;
     email_id: string;
     title_name: string;
 }

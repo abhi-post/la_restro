@@ -99,6 +99,7 @@ export class UsersService {
             user.shop = savedShop;
             return this.userRepository.save(user);
         }catch(error){
+            console.log(error);
             if(error.name == "ValidationError"){
                 throw new BadRequestException(error.errors);
             }

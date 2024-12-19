@@ -3,24 +3,13 @@ import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-valid
 
 export class CreateShopDto{
 
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    shop_name: string;
-
-    @ApiProperty()
-    @IsNumber()
-    @IsNotEmpty()
-    mobile_no: number;
-
     @ApiProperty()
     @IsEmail()
-    @IsOptional()
+    @IsNotEmpty({message: "email id is required"})
     email_id: string;
 
     @ApiProperty()
     @IsString()
-    @IsOptional()
+    @IsNotEmpty({message: "shop title is required"})
     title_name: string;
 }

@@ -11,9 +11,6 @@ export class Shop{
     @Column({ nullable:true })
     email_id: string;
 
-    @Column({ type: 'bigint', unique: true })
-    mobile_no: number;
-
     @Column({ nullable:true })
     gstin: string;
 
