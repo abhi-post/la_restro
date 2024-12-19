@@ -51,7 +51,7 @@ export class UsersService {
             }
 
             if(error.name == "ConflictException"){
-                throw new ConflictException("Username already exist");
+                throw new ConflictException("Mobile number already exist");
             }
             
             throw new ServiceUnavailableException();

@@ -5,7 +5,7 @@ export type CreateUserParams = {
 }
 
 export type UpdateUserParams = {
-    username: string;
+    mobile_no: number;
     password: string;
 }
 
