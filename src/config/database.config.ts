@@ -14,15 +14,6 @@ function typeormModuleOptions(): TypeOrmModuleOptions {
     autoLoadEntities: true,
     synchronize: false
 
-    // host: '217.21.94.52',
-    // port: 3306,
-    // username: 'u306182174_la_restro',
-    // password: 'XyE1tC7[uI',
-    // database: 'u306182174_la_restro',
-    // entities: [join(__dirname, '../**/**/*entity{.ts,.js}')],
-    // autoLoadEntities: true,
-    // synchronize: false
-
   }
    
 }
