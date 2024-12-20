@@ -5,7 +5,7 @@ import { EntityManager, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as QrCode from 'qrcode';
 import * as sharp from 'sharp';
-import { User } from '../../../typeorm/entities/Users.entity';
+import { User } from '../../../typeorm/entities/User.entity';
 import { Shop } from '../../../typeorm/entities/Shop.entity';
 import { join } from 'path'
 
@@ -19,7 +19,7 @@ export class UsersService {
 
     async findUser(){
         try{
-            const users = await this.userRepository.find({ relations: ['shop']});
+            const users = await this.userRepository.find({ relations: ['fk_shop_id']});
             return {"statusCode":200,"message":"data found","data":users}
         }catch(error){
             console.log(error)
@@ -96,10 +96,9 @@ export class UsersService {
 
             const newShop =  this.shopRepository.create({...shopDetails, shop_qr_code: base64String, created_date: new Date(), created_time: new Date()});
             const savedShop = await this.shopRepository.save(newShop);
-            user.shop = savedShop;
+            user.fk_shop_id = savedShop;
             return this.userRepository.save(user);
         }catch(error){
-            console.log(error);
             if(error.name == "ValidationError"){
                 throw new BadRequestException(error.errors);
             }

@@ -13,3 +13,15 @@ export type CreateShopParams = {
     email_id: string;
     title_name: string;
 }
+
+export type CreateTableParams = {
+    name: string;
+    description: string;
+    fk_user_id: number;
+}
+
+export type UpdateTableParams = {
+    name: string;
+    description: string;
+    fk_user_id: number;
+}
