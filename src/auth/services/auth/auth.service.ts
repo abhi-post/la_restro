@@ -15,7 +15,7 @@ export class AuthService {
         if (existingUser && (await compare(password, existingUser.password))) {
             const { password, ...rest } = existingUser;
             const jwtToken = this.jwtService.sign(rest);
-            return {"statusCode":200,"message":"login success","data":rest, "jwt_token": jwtToken}
+            return {statusCode:200,message:"login success",data:rest, "jwt_token": jwtToken}
         }
 
         return null;

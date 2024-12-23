@@ -17,9 +17,9 @@ export class TableController {
         return this.tableService.findOne(id);
     }
 
-    @Get('all_user_table/:id')
+    @Get('user_table/:id')
     getTableByUserId(@Param('id') id: number){
-        return this.tableService.fineTableByUserId(id);
+        return this.tableService.findTableByUserId(id);
     }
 
     @Post('/add-table')

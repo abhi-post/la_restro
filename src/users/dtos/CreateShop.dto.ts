@@ -12,4 +12,15 @@ export class CreateShopDto{
     @IsString()
     @IsNotEmpty({message: "shop title is required"})
     title_name: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    shop_address: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    shop_logo: string;
+
 }

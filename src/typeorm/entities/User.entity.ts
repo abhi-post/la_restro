@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Shop } from "./Shop.entity";
 import { Table } from "./Table.entity";
+import { Menu } from "./Menu.entity";
 
 @Entity({ name: 'users'})
 export class User {
@@ -25,11 +26,17 @@ export class User {
     @Column({ type: 'time'})
     created_time: Date;
 
-    @OneToOne( () => Shop )
+    @OneToOne( () => Shop, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE', eager: true
+    } )
     @JoinColumn({ name: 'fk_shop_id' })
     fk_shop_id: Shop;
 
     @OneToMany(() => Table, (table) => table.id)
     tables: Table[];
+
+    @OneToMany(() => Menu, (menu) => menu.id)
+    menus: Menu[];
 
 }

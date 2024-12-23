@@ -20,7 +20,7 @@ export class UsersService {
     async findUser(){
         try{
             const users = await this.userRepository.find({ relations: ['fk_shop_id']});
-            return {"statusCode":200,"message":"data found","data":users}
+            return {statusCode:200,message:"data found",data:users}
         }catch(error){
             console.log(error)
             if(error.name == "ValidationError"){
@@ -61,7 +61,7 @@ export class UsersService {
     async updateUser(id: number, updateuserDetails: UpdateUserParams){
         try{
             const updatedUser = await this.userRepository.update({ id }, { ...updateuserDetails })
-            return {"statusCode":200,"message":"User Updated","data":""}
+            return {statusCode:200,message:"User Updated",data:""}
         }catch(error){
             if(error.name == "ValidationError"){
                 throw new BadRequestException(error.errors);
@@ -73,8 +73,9 @@ export class UsersService {
     async deleteUser(id: number){
         try{
             await this.userRepository.delete({ id })
-            return {"statusCode":200,"message":"User Deleted","data":""}
+            return {statusCode:200,message:"User Deleted",data:""}
         }catch(error){
+            console.log(error);
             if(error.name == "ValidationError"){
                 throw new BadRequestException(error.errors);
             }

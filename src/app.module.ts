@@ -8,6 +8,7 @@ import { TYPEORM_CONFIG } from './config/constants';
 import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
 import { TableModule } from './table/table.module';
+import { CategoriesModule } from './categories/categories.module';
 import databaseConfig from './config/database.config';
 
 @Module({
@@ -27,7 +28,8 @@ import databaseConfig from './config/database.config';
     UsersModule,
     AuthModule,
     MenuModule,
-    TableModule 
+    TableModule,
+    CategoriesModule 
   ],  
   controllers: [AppController],
   providers: [AppService],

@@ -15,7 +15,7 @@ export class TableService {
     async find(){
         try{
             const tables = await this.tableRepository.find({ relations: ['fk_user_id']});
-            return {"statusCode":200,"message":"data found","data":tables}
+            return {statusCode:200,message:"data found",data:tables}
         }catch(error){
             if(error.name == "ValidationError"){
                 throw new BadRequestException(error.errors);
@@ -31,7 +31,7 @@ export class TableService {
                 throw new NotFoundException();
             }
 
-            return {"statusCode":200,"message":"data found","data":table}
+            return {statusCode:200,message:"data found",data:table}
         }catch(error){
             if(error.name == "NotFoundException"){
                 throw new NotFoundException("Table not found");
@@ -39,14 +39,14 @@ export class TableService {
         }
     }
 
-    async fineTableByUserId(user_id: number){
+    async findTableByUserId(user_id: number){
         try{
             const table = await this.tableRepository.find({ where: { fk_user_id: {id: user_id} }});
             if (!table) {
                 throw new NotFoundException();
             }
 
-            return {"statusCode":200,"message":"data found","data":table}
+            return {statusCode:200,message:"data found",data:table}
         }catch(error){
             if(error.name == "NotFoundException"){
                 throw new NotFoundException("No Table found");
@@ -114,7 +114,7 @@ export class TableService {
             }
 
             const updatedItem = await this.tableRepository.update(id, { ...updateTableDetails, fk_user_id: user })
-            return {"statusCode":200,"message":"Table Updated","data":updatedItem}
+            return {statusCode:200,message:"Table Updated",data:updatedItem}
         }catch(error){
             if(error.name == "ValidationError"){
                 throw new BadRequestException(error.errors);
@@ -136,7 +136,7 @@ export class TableService {
                 return new NotFoundException();
             }
             await this.tableRepository.delete(id);
-            return {"statusCode":200,"message":"Table Deleted","data":""}
+            return {statusCode:200,message:"Table Deleted",data:""}
         }catch(error){
             console.log(error);
             if(error.name == "ValidationError"){

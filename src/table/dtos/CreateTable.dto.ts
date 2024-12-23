@@ -5,7 +5,7 @@ export class CreateTableDto{
 
     @ApiProperty({ required: true })
     @IsString()
-    @IsNotEmpty({message: "table name id is required"})
+    @IsNotEmpty({message: "table name is required"})
     name: string;
 
     @ApiProperty({ required: true })
