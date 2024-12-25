@@ -14,11 +14,26 @@ export class User {
     @Column({ type: 'bigint', unique: true })
     mobile_no: number;
 
+    @Column({ nullable:true })
+    email_id: string;
+
+    @Column({ nullable:true, type: 'longtext'})
+    shop_qr_code:string;
+
     @Column()
     password: string;
 
     @Column({ nullable:true })
     auth_strategy: string;
+
+    @Column({ default: false })
+    is_mobile_verfied: boolean;
+
+    @Column({ default: false })
+    is_email_verified: boolean;
+
+    @Column({ nullable:true })
+    otp: string;
 
     @Column({ type: 'date'})
     created_date: Date;

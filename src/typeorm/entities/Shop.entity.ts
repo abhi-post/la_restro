@@ -17,12 +17,6 @@ export class Shop{
     @Column({ nullable:true })
     trademark_name: string;
 
-    @Column({ default: false })
-    is_mobile_verfied: boolean;
-
-    @Column({ default: false })
-    is_email_verified: boolean;
-
     @Column({ type: 'longtext'})
     shop_qr_code:string;
 

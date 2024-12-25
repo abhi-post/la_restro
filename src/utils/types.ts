@@ -1,5 +1,6 @@
 export type CreateUserParams = {
     mobile_no: number;
+    email_id: string;
     enterprise_name: string;
     password: string;
 }

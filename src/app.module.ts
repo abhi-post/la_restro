@@ -10,6 +10,7 @@ import { MenuModule } from './menu/menu.module';
 import { TableModule } from './table/table.module';
 import { CategoriesModule } from './categories/categories.module';
 import databaseConfig from './config/database.config';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   
@@ -24,6 +25,15 @@ import databaseConfig from './config/database.config';
       isGlobal: true,
       load: [databaseConfig],
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
     }),
     UsersModule,
     AuthModule,
