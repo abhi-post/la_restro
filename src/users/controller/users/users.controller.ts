@@ -4,7 +4,7 @@ import { CreateShopDto } from '../../dtos/CreateShop.dto';
 import { CreateUserDto } from '../../dtos/CreateUser.dto';
 import { UpdateUserDto } from '../../dtos/UpdateUser.dto';
 import { UsersService } from '../../services/users/users.service';
-import { CreateTokenDto } from 'src/users/dtos/CreateToken.dto';
+import { CreateTokenDto } from '../../dtos/CreateToken.dto';
 
 @Controller('users')
 export class UsersController {

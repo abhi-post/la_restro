@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGua
 import { CreateTableDto } from '../../dtos/CreateTable.dto';
 import { UpdateTableDto } from '../../dtos/UpdateTable.dto';
 import { TableService } from '../../services/table/table.service';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from '../../../auth/guards/auth.guard';
 import { ApiHeader } from '@nestjs/swagger';
 
 @Controller('table')

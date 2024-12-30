@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { MenuService } from '../../services/menu/menu.service';
 import { CreateMenuDto } from '../../dtos/CreateMenu.dto';
 import { ApiHeader } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from '../../../auth/guards/auth.guard';
 
 @Controller('menu')
 export class MenuController {

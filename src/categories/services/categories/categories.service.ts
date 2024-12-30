@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException, 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../../../typeorm/entities/Category.entity';
 import { Repository } from 'typeorm';
-import { CreateCategoryParams, UpdateCategoryParams } from 'src/utils/types';
+import { CreateCategoryParams, UpdateCategoryParams } from '../../../utils/types';
 
 @Injectable()
 export class CategoriesService {
