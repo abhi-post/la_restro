@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateShopParams, CreateUserParams, UpdateUserParams } from '../../../utils/types';
+import { CreateShopParams, CreateTokenParams, CreateUserParams, UpdateUserParams } from '../../../utils/types';
 import { EntityManager, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as QrCode from 'qrcode';
@@ -8,13 +8,15 @@ import * as sharp from 'sharp';
 import { User } from '../../../typeorm/entities/User.entity';
 import { Shop } from '../../../typeorm/entities/Shop.entity';
 import { join } from 'path';
+import { Token } from '../../../typeorm/entities/Token.entity';
 
 @Injectable()
 export class UsersService {
 
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(Shop) private shopRepository: Repository<Shop>
+        @InjectRepository(Shop) private shopRepository: Repository<Shop>,
+        @InjectRepository(Token) private tokenRepository: Repository<Token>
     ) { }
 
     async findUser() {
@@ -26,34 +28,6 @@ export class UsersService {
             if (error.name == "ValidationError") {
                 throw new BadRequestException(error.errors);
             }
-            throw new ServiceUnavailableException();
-        }
-    }
-
-    async createUser(userDetails: CreateUserParams) {
-        try {
-            const existingUser = await this.userRepository.findOne({
-                where: { mobile_no: userDetails.mobile_no }
-            });
-
-            if (existingUser) {
-                throw new ConflictException();
-            }
-
-            const userPassword = userDetails.password;
-            const encPassword = await bcrypt.hash(userPassword, 10);
-            userDetails.password = encPassword;
-            const newUser = this.userRepository.create({ ...userDetails, created_date: new Date(), created_time: new Date() });
-            return this.userRepository.save(newUser);
-        } catch (error) {
-            if (error.name == "ValidationError") {
-                throw new BadRequestException(error.errors);
-            }
-
-            if (error.name == "ConflictException") {
-                throw new ConflictException("Mobile number already exist");
-            }
-
             throw new ServiceUnavailableException();
         }
     }
@@ -85,17 +59,12 @@ export class UsersService {
 
     async createShop(id: number, shopDetails: CreateShopParams) {
         try {
-            /* Generate Qr Code for shop */
-            const data = 'https://example.com'; // The data to encode in the QR code
-            const logoPath = join(__dirname, '../../../../src/utils/logo.png') // Path to your logo
-            const base64String = await this.generateQrWithLogoBase64(data, logoPath);
-            /* Generate Qr Code for shop */
             const user = await this.userRepository.findOneBy({ id });
             if (!user) {
                 throw new NotFoundException();
             }
 
-            const newShop = this.shopRepository.create({ ...shopDetails, shop_qr_code: base64String, created_date: new Date(), created_time: new Date() });
+            const newShop = this.shopRepository.create({ ...shopDetails, created_date: new Date(), created_time: new Date() });
             const savedShop = await this.shopRepository.save(newShop);
             user.fk_shop_id = savedShop;
             return this.userRepository.save(user);
@@ -178,9 +147,69 @@ export class UsersService {
 
     }
 
-    async resetPassword(userDetails: any) {
+    async commonSaveUser(userDetails: any) {
         const updatedUser = this.userRepository.create({ ...userDetails });
         return this.userRepository.save(updatedUser);
+    }
+
+    async saveToken(tokenDetails: CreateTokenParams){
+        try{
+            const user = await this.userRepository.findOne({ where: { 
+                id: tokenDetails.fk_user_id ,
+            }});
+            if (!user) {
+                throw new NotFoundException({message: 'User does not exists or unauthorized'});
+            }
+
+            const token = await this.tokenRepository.findOne({ 
+                where: { 
+                    fk_user_id: {id: tokenDetails.fk_user_id} ,
+                    fcm_device_token: tokenDetails.fcm_device_token
+                },
+                relations: ['fk_user_id']
+            });
+            
+            if (token) {
+                throw new ConflictException({message: "Token Already Exist"});
+            }else{
+                const token = await this.tokenRepository.findOne({ 
+                    where: { 
+                        fk_user_id: {id: tokenDetails.fk_user_id}
+                    }
+                });
+                
+                if(token && token.fcm_device_token != tokenDetails.fcm_device_token){
+                    const updatedItem = this.tokenRepository.update(token.id, {
+                        fcm_device_token: tokenDetails.fcm_device_token
+                    });
+
+                    return { statusCode: 200, message: "Token Updated", data: "" }
+                }else{
+                    const newToken = this.tokenRepository.create({ 
+                        fcm_device_token: tokenDetails.fcm_device_token,
+                        fk_user_id: user
+                    });
+            
+                    return this.tokenRepository.save(newToken);
+                }
+            }
+
+
+        } catch (error) {
+            if (error.name == "ValidationError") {
+                throw new BadRequestException(error.errors);
+            }
+
+            if (error.name == "NotFoundException") {
+                throw new NotFoundException(error.response.message);
+            }
+
+            if (error.name == "ConflictException") {
+                throw new ConflictException(error.response.message);
+            }
+
+            throw new ServiceUnavailableException();
+        }
     }
 
     /* Function to generate QR code with logo and return base64 string start */

@@ -35,11 +35,8 @@ export class User {
     @Column({ nullable:true })
     otp: string;
 
-    @Column({ type: 'date'})
-    created_date: Date;
-
-    @Column({ type: 'time'})
-    created_time: Date;
+    @Column({ nullable:true })
+    session_id: string;
 
     @OneToOne( () => Shop, {
         onDelete: 'CASCADE',
@@ -53,5 +50,11 @@ export class User {
 
     @OneToMany(() => Menu, (menu) => menu.id)
     menus: Menu[];
+
+    @Column({ type: 'date'})
+    created_date: Date;
+
+    @Column({ type: 'time'})
+    created_time: Date;
 
 }

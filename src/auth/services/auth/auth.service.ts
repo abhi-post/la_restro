@@ -1,13 +1,15 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, ServiceUnavailableException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
 import { LoginDto } from '../../dtos/Login.dto';
 import { UsersService } from '../../../users/services/users/users.service';
 import * as crypto from 'crypto';
-import { ResetPasswordDto } from 'src/auth/dtos/ResetPassword.dto';
+import { ResetPasswordDto } from '../../dtos/ResetPassword.dto';
 import * as bcrypt from 'bcrypt';
 import { CreateUserParams } from '../../../utils/types';
-import { VerifyOtpDto } from 'src/auth/dtos/VerifyOtp.dto';
+import { VerifyOtpDto } from '../../dtos/VerifyOtp.dto';
+import { RefreshTokenDto } from '../../dtos/RefreshToken.dto';
+
 
 @Injectable()
 export class AuthService {
@@ -33,9 +35,17 @@ export class AuthService {
             const encPassword = await bcrypt.hash(userPassword, 10);
             userDetails.password = encPassword;
             const saveUser = await this.userService.saveUser(userDetails);
-            const { password,shop_qr_code, ...rest } = saveUser;
-            const jwtToken = this.jwtService.sign(rest);
-            return { statusCode: 200, message: "User Successfully Registered", data: rest, "jwt_token": jwtToken }
+            const existingUser = await this.userService.findOne(userDetails.mobile_no);
+            if (existingUser) {
+                // Generate new session ID 
+                const newSessionId = this.generateSessionId();
+                existingUser.session_id = newSessionId;
+                const updatedUser = await this.userService.commonSaveUser(existingUser);
+                const { password, shop_qr_code, ...rest } = existingUser;
+                const jwtToken = this.jwtService.sign(rest, { expiresIn: '30m' });
+                const refreshToken = this.jwtService.sign(rest, { expiresIn: '7d' });
+                return { statusCode: 200, message: "User Successfully Registered", data: rest, jwt_token: jwtToken, refresh_token: refreshToken }
+            }
         } catch (error) {
             console.log(error);
             if (error.name == "ValidationError") {
@@ -54,12 +64,17 @@ export class AuthService {
     async validateUser(mobile_no: number, password: string) {
         const existingUser = await this.userService.findOne(mobile_no);
         if (existingUser && (await compare(password, existingUser.password))) {
+            // Generate new session ID 
+            const newSessionId = this.generateSessionId();
+            existingUser.session_id = newSessionId;
+            const updatedUser = await this.userService.commonSaveUser(existingUser);
             const { password, shop_qr_code, ...rest } = existingUser;
-            const jwtToken = this.jwtService.sign(rest);
-            return { statusCode: 200, message: "login success", data: rest, "jwt_token": jwtToken }
+            const refreshToken = this.jwtService.sign(rest, { expiresIn: '7d' });
+            const jwtToken = this.jwtService.sign(rest, { expiresIn: '30m' });
+            return { statusCode: 200, message: "login success", data: rest, jwt_token: jwtToken, refresh_token: refreshToken }
+        } else {
+            throw new UnauthorizedException('Login user or password does not match.');
         }
-
-        return null;
     }
 
     async forgotPassword(mobile_no: number) {
@@ -70,7 +85,7 @@ export class AuthService {
             }
             const otp = (crypto.randomInt(1000, 10000)).toString();
             user.otp = otp;
-            const updatedUser = await this.userService.resetPassword(user);
+            const updatedUser = await this.userService.commonSaveUser(user);
             const message = `OTP to reset your password: ${otp}`;
             // this.mailService.sendMail({
             //     from: 'La-Restra Support <support@larestra.store>',
@@ -89,7 +104,7 @@ export class AuthService {
         }
     }
 
-    async verifyOtp(verifyOtpDetails: VerifyOtpDto){
+    async verifyOtp(verifyOtpDetails: VerifyOtpDto) {
         const user = await this.userService.findOne(verifyOtpDetails.mobile_no);
         if (!user) {
             throw new NotFoundException({ message: "User Not Found, You can't verify otp" });
@@ -97,11 +112,11 @@ export class AuthService {
 
         const savedOtp: number = parseInt(user.otp);
 
-        if(savedOtp === verifyOtpDetails.otp){
+        if (savedOtp === verifyOtpDetails.otp) {
             user.otp = "";
-            await this.userService.resetPassword(user);
+            await this.userService.commonSaveUser(user);
             return { statusCode: 200, message: 'OTP Verified Successfully', data: "" };
-        }else{
+        } else {
             return { statusCode: 200, message: 'Wrong OTP', data: "" };
         }
     }
@@ -117,11 +132,35 @@ export class AuthService {
 
             const hashedPassword = await bcrypt.hash(resetPasswordDto.password, 10);
             user.password = hashedPassword;
-            const updatedUser = await this.userService.resetPassword(user);
+            const updatedUser = await this.userService.commonSaveUser(user);
             return { message: 'Password reset successfully' };
 
         } catch (error) {
             throw new Error('Invalid or expired token');
+        }
+    }
+
+    private generateSessionId(): string {
+        const id = crypto.randomBytes(16).toString("hex");
+        return id;
+    }
+
+    // Refresh Token
+    async refreshToken(refreshToken: RefreshTokenDto) {
+        try { 
+            const payload = this.jwtService.verify(refreshToken.refresh_token);
+            console.log(payload);
+            const user = await this.userService.findOne(payload.mobile_no);
+
+            if (!user) {
+                throw new UnauthorizedException('User not found');
+            }
+            const { password, shop_qr_code, ...rest } = user;
+            const newAccessToken = this.jwtService.sign(rest, { expiresIn: '30m' });
+            return { accessToken: newAccessToken };
+        } catch (error) {
+            console.log(error);
+            throw new UnauthorizedException('Invalid refresh token');
         }
     }
 }

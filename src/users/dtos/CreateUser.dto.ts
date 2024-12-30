@@ -22,4 +22,5 @@ export class CreateUserDto{
     @IsString()
     @IsNotEmpty({ message: "password is required"})
     password: string;
+    
 }

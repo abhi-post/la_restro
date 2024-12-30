@@ -11,7 +11,6 @@ export type UpdateUserParams = {
 }
 
 export type CreateShopParams = {
-    email_id: string;
     title_name: string;
     shop_address: string;
     shop_logo: string;
@@ -47,5 +46,10 @@ export type CreateMenuParams = {
     type_of_food:string;
     no_of_product: number;
     fk_category_id: number;
+    fk_user_id: number;
+}
+
+export type CreateTokenParams = {
+    fcm_device_token: string;
     fk_user_id: number;
 }

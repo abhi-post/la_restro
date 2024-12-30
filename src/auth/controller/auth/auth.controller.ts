@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from '../../dtos/Login.dto';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
@@ -8,6 +7,7 @@ import { ForgotPasswordDto } from '../../dtos/ForgotPassword.dto';
 import { ResetPasswordDto } from '../../dtos/ResetPassword.dto';
 import { CreateUserDto } from '../../dtos/CreateUser.dto';
 import { VerifyOtpDto } from '../../dtos/VerifyOtp.dto';
+import { RefreshTokenDto } from '../../dtos/RefreshToken.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +19,7 @@ export class AuthController {
     }
 
     @Post('login')
-    @UseGuards(LocalAuthGuard)
+    // @UseGuards(LocalAuthGuard)
     login(@Body() loginDto: LoginDto){
         return this.authService.validateUser(loginDto.mobile_no, loginDto.password);
     }
@@ -43,5 +43,10 @@ export class AuthController {
     @Post('/reset-password')
     resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
         return this.authService.resetPassword(resetPasswordDto);
+    }
+
+    @Post('refresh')
+    async refresh(@Body() refreshToken: RefreshTokenDto) {
+        return this.authService.refreshToken(refreshToken);
     }
 }

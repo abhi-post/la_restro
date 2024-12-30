@@ -4,6 +4,7 @@ import { CreateShopDto } from '../../dtos/CreateShop.dto';
 import { CreateUserDto } from '../../dtos/CreateUser.dto';
 import { UpdateUserDto } from '../../dtos/UpdateUser.dto';
 import { UsersService } from '../../services/users/users.service';
+import { CreateTokenDto } from 'src/users/dtos/CreateToken.dto';
 
 @Controller('users')
 export class UsersController {
@@ -12,11 +13,6 @@ export class UsersController {
     @Get()
     getUser(){
         return this.userService.findUser();
-    }
-
-    @Post()
-    createUser(@Body() CreateUserDto: CreateUserDto){
-        return this.userService.createUser(CreateUserDto);  
     }
 
     @Put(':id')
@@ -38,5 +34,12 @@ export class UsersController {
         @Body() CreateShopDto: CreateShopDto
     ){
         return this.userService.createShop(id, CreateShopDto);  
+    }
+
+    @Post('save-token')
+    saveFcmToken(
+        @Body() createTokenDto: CreateTokenDto
+    ){
+        return this.userService.saveToken(createTokenDto);  
     }
 }
