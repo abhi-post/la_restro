@@ -13,7 +13,6 @@ function typeormModuleOptions(): TypeOrmModuleOptions {
     entities: [join(__dirname, '../**/**/*entity{.ts,.js}')],
     autoLoadEntities: true,
     synchronize: false
-
   }
    
 }
